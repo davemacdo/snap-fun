@@ -15,7 +15,11 @@ export default {
 	name: 'app',
 	data () {
 		return {
-			msg: 'I\'m sure you\'ll put something interesting here eventually.',
+			color: {
+				bg: '#0D192B',
+				fg: [ '#07F9A2', '#09C184', '#0A8967' ]
+			},
+			gradient: null,
 			s: null,
 			shapes: {},
 			interval: 1000,
@@ -31,26 +35,64 @@ export default {
 		setup() {
 			this.s = Snap('#snap');
 			// this.anim = setInterval(function () {console.log('log') }, this.interval);
+
+			// fill background
+			this.s.rect({
+				x: 0,
+				y: 0,
+				width: this.w,
+				height: this.h,
+				fill: this.color.bg
+			});
+
+			// set up gradients
+			// var rgb = Snap.getRGB(this.color.fg[0]);
+			// console.log(rgb);
+			// var rgba ='rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0)';
+			// console.log(rgba);
+			this.gradient = this.s.gradient('r(0.5, 0.5, 0.5)' + this.hexToRGBA(this.color.fg[0], 1) + '-' + this.hexToRGBA(this.color.fg[0], 0) );
+			console.log(this.gradient.stops()[0]);
 		},
 		draw() {
 			for (var num = 0; num < 5; num++){
+				var fill = this.varyColor(this.color.fg[0]);
+				var g = 'r()' + this.hexToRGBA(fill, 1) + '-' + this.hexToRGBA(fill, 0);
 				var newShape = this.s.circle({
 					cx: this.w/2,
 					cy: this.h/2,
 					r: Math.min(this.w, this.h)/10,
-					fillOpacity: 0.5,
-					fill: chance.color()
+					// fillOpacity: 0.7,
+					// fill: this.color.fg[0]
+					fill: g
 				}).click(this.click);
 				newShape.attr({ id: newShape.id });
 			}
 		},
+		hexToRGBA(hex,alpha){
+			var rgb = Snap.getRGB(hex);
+			var rgba ='rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + alpha + ')';
+			return rgba;
+		},
+		varyColor(input){
+			var color = Snap.getRGB(input);
+			color.r += chance.normal({dev: 20});
+			color.g += chance.normal({dev: 20});
+			color.b += chance.normal({dev: 20});
+			return Snap.rgb(color.r, color.g, color.b);
+		},
 		click(event) {
+			// var newCol = chance.color();
+			// var g = 'r()' + this.hexToRGBA(newCol, 1) + '-' + this.hexToRGBA(newCol, 0);
+
+			var fill = this.varyColor(this.color.fg[0]);
+			var g = 'r()' + this.hexToRGBA(fill, 1) + '-' + this.hexToRGBA(fill, 0);
+
 			// console.log(event.target.id);
-			this.s.select('#' + event.target.id).animate(
+			this.s.select('#' + event.target.id).attr(
 				{
-					fill: chance.color()
+					fill: g
 				},
-				1000
+				// 1000
 			);
 		},
 		move(coords, stepSize) {
