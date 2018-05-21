@@ -1,0 +1,39 @@
+@import 'normalize';
+@import 'vars';
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#app {
+	font-family: $main-font-stack;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+	color: $main-fg;
+	height: 100%;
+	width: 100%;
+
+	// margin-top: 60px;
+
+	#snap {
+		height: 100%;
+		width: 100%;
+	}
+}
+
+h1, h2 {
+	font-weight: normal;
+}
+
+ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+li {
+	display: inline-block;
+	margin: 0 10px;
+}
